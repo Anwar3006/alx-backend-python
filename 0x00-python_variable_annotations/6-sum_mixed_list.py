@@ -5,7 +5,7 @@ Mixed Type Addition Function
 from typing import Union, List
 
 
-def sum_mixed_list(mxd_list: 'List[Union[float, int]]') -> float:
+def sum_mixed_list(mxd_list: 'List[Union[int, float]]') -> float:
     """
     a type-annotated function sum_mixed_list which takes a
     list mxd_lst of integers and floats and returns their sum as a float.
