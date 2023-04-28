@@ -10,5 +10,4 @@ def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
     The second element is the square of the int/float v
     and should be annotated as a float.
     """
-    rootOf: float = v ** 2
-    return (k, rootOf)
+    return (k, float(v ** 2))
