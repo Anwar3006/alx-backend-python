@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+Async coroutine for generating random floats
+"""
 import asyncio
 import random
 
