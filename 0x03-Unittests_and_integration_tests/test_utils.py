@@ -3,13 +3,19 @@
 Unit Tests on Utils.py
 """
 import unittest
-import utils
+from utils import (
+    access_nested_map,
+    get_json,
+    memoize,
+)
 from parameterized import parameterized
 from unittest.mock import patch, Mock
 
 
 class TestAccessNestedMap(unittest.TestCase):
-
+    """
+    Tests the `access_nested_map` function
+    """
     @parameterized.expand([
         (1, {"a": 1}, ("a",)),
         (2, {"a": {"b": 2}}, ("a", "b")),
@@ -28,7 +34,7 @@ class TestAccessNestedMap(unittest.TestCase):
         self.nested_dict = input1
         self.path = input2
         self.assertEqual(
-            utils.access_nested_map(
+            access_nested_map(
                 self.nested_dict,
                 self.path),
             output)
@@ -44,7 +50,7 @@ class TestAccessNestedMap(unittest.TestCase):
         self.nested_dict = input1
         self.path = input2
         with self.assertRaises(KeyError) as aR:
-            utils.access_nested_map(input1, input2)
+            access_nested_map(input1, input2)
 
 
 class TestGetJson(unittest.TestCase):
@@ -57,13 +63,38 @@ class TestGetJson(unittest.TestCase):
     ])
     def test_get_json(self, test_url, test_payload):
         """
-        Test the get_json function's output
+        Checking the get_json function's output
         """
         with patch('requests.get') as mock_req_get:
             mock_data = Mock(return_value=test_payload)
             mock_req_get.return_value.json = mock_data
-            self.assertEqual(utils.get_json(test_url), test_payload)
+            self.assertEqual(get_json(test_url), test_payload)
             mock_req_get.assert_called_once_with(test_url)
+
+
+class TestMemoize(unittest.TestCase):
+    """
+    Tests the `memoize` function
+    """
+    def test_memoize(self):
+        """
+        Checking the output of the function
+        """
+        class TestClass:
+
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+        with patch.object(TestClass, 'a_method', return_value=lambda: 42) as mock_fn:
+            # mock_fn.return_value = TestClass().a_method()
+            my_class = TestClass()
+            self.assertEqual(my_class.a_property(), 42)
+            self.assertEqual(my_class.a_property(), 42)
+            mock_fn.assert_called_once()
+
 
 
 if __name__ == "__main__":
