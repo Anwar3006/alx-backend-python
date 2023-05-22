@@ -45,7 +45,7 @@ class TestGithubOrgClient(unittest.TestCase):
             print(GithubOrgClient("google")._public_repos_url)
         self.assertEqual(
             GithubOrgClient("google")._public_repos_url,
-            "https://api.github.com/users/google/repos"
+            "https://api.github.com/orgs/google/repos"
         )
 
     @patch('client.get_json')
@@ -107,6 +107,19 @@ class TestGithubOrgClient(unittest.TestCase):
             )
             mock_pub_repos.assert_called_once()
         mock_get_json.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, test_repo, test_key, result):
+        """
+        Testing GithubOrgClient.has_license.
+        """
+        self.assertEqual(
+            GithubOrgClient("google").has_license(test_repo, test_key),
+            result
+            )
 
 
 if __name__ == "__main__":
